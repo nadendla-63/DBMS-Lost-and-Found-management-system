@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lost & Found Management System</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+body{
+margin:0;
+font-family:'Inter', sans-serif;
+background:#0b1220;
+color:#e5e7eb;
+}
+
+/* ================= LOGIN ================= */
+.login{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background: radial-gradient(circle at top, #1e293b, #0b1220);
+}
+
+.login-box{
+width:360px;
+padding:30px;
+background:rgba(255,255,255,0.06);
+backdrop-filter: blur(12px);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:16px;
+box-shadow:0 20px 50px rgba(0,0,0,0.5);
+}
+
+.login-box h2{
+margin-bottom:20px;
+font-weight:700;
+}
+
+input,select,textarea{
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:none;
+outline:none;
+background:#111827;
+color:#fff;
+font-size:14px;
+}
+
+textarea{resize:none;height:70px}
+
+.btn{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+.btn-primary{
+background:linear-gradient(135deg,#3b82f6,#2563eb);
+color:white;
+}
+
+.btn-primary:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 20px rgba(59,130,246,0.3);
+}
+
+/* ================= DASHBOARD ================= */
+.dashboard{display:none}
+
+/* TOPBAR */
+.topbar{
+height:60px;
+background:#111827;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 25px;
+border-bottom:1px solid #1f2937;
+}
+
+.topbar h1{
+font-size:16px;
+font-weight:600;
+}
+
+.user{
+font-size:13px;
+color:#9ca3af;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:230px;
+height:100vh;
+position:fixed;
+background:#0f172a;
+padding:20px;
+border-right:1px solid #1f2937;
+}
+
+.sidebar h3{
+color:#60a5fa;
+margin-bottom:20px;
+}
+
+.menu{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.menu div{
+padding:10px;
+border-radius:10px;
+cursor:pointer;
+transition:0.3s;
+color:#cbd5e1;
+}
+
+.menu div:hover{
+background:#1e293b;
+color:white;
+}
+
+/* CONTENT */
+.content{
+margin-left:250px;
+padding:25px;
+}
+
+/* CARD */
+.card{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+padding:20px;
+border-radius:16px;
+margin-bottom:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+.card h2{
+margin-bottom:15px;
+font-size:18px;
+}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+/* ITEMS */
+.item{
+background:#111827;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:1px solid #1f2937;
+font-size:14px;
+}
+
+/* BUTTONS */
+.btn-small{
+padding:10px;
+border-radius:10px;
+border:none;
+cursor:pointer;
+font-weight:600;
+}
+
+.success{background:#10b981;color:white}
+.blue{background:#3b82f6;color:white}
+
+hr{
+border:0;
+border-top:1px solid #1f2937;
+margin:15px 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage" class="login">
+  <div class="login-box">
+    <h2>Lost & Found System</h2>
+
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button class="btn btn-primary" onclick="login()">Login</button>
+
+    <p style="text-align:center;margin-top:15px;color:#60a5fa;cursor:pointer" onclick="signup()">
+      Create new account
+    </p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <h1>Lost & Found Dashboard</h1>
+  <div class="user" id="welcome"></div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h3>Navigation</h3>
+  <div class="menu">
+    <div onclick="show('lost')">📦 Lost Reports</div>
+    <div onclick="show('found')">📍 Found Reports</div>
+    <div onclick="show('matches')">🔗 Matches</div>
+    <div onclick="show('notif')">🔔 Notifications</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- LOST -->
+<div id="lost" class="card">
+<h2>Report Lost Item</h2>
+
+<div class="grid">
+<select id="l_user"></select>
+<select id="l_item"></select>
+</div>
+
+<select id="l_station"></select>
+<input id="l_loc" placeholder="Location">
+
+<button class="btn-small blue" onclick="addLost()">Submit Lost</button>
+<button class="btn-small success" onclick="loadLost()">Load</button>
+
+<div id="lostList"></div>
+</div>
+
+<!-- FOUND -->
+<div id="found" class="card" style="display:none">
+<h2>Report Found Item</h2>
+
+<div class="grid">
+<select id="f_user"></select>
+<select id="f_item"></select>
+</div>
+
+<select id="f_station"></select>
+<input id="f_loc" placeholder="Location">
+
+<button class="btn-small blue" onclick="addFound()">Submit Found</button>
+<button class="btn-small success" onclick="loadFound()">Load</button>
+
+<div id="foundList"></div>
+</div>
+
+<!-- MATCHES -->
+<div id="matches" class="card" style="display:none">
+<h2>Auto Matches</h2>
+<button class="btn-small blue" onclick="loadMatches()">Load Matches</button>
+<div id="matchList"></div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="notif" class="card" style="display:none">
+<h2>Notifications</h2>
+<button class="btn-small blue" onclick="loadNotif()">Load</button>
+<div id="notifList"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+
+let currentUser;
+const API="http://localhost:3000";
+
+/* LOGIN */
+async function login(){
+let res=await fetch(API+"/login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+email:email.value,
+password:password.value
+})
+});
+
+let d=await res.json();
+
+if(d.user_id){
+currentUser=d.user_id;
+
+loginPage.style.display="none";
+dashboard.style.display="block";
+
+welcome.innerText="Welcome, "+d.name;
+
+loadDropdowns();
+}
+}
+
+/* SIGNUP */
+async function signup(){
+let name=prompt("Name");
+let email=prompt("Email");
+let phone=prompt("Phone");
+let password=prompt("Password");
+
+await fetch(API+"/signup",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({name,email,phone,password})
+});
+
+alert("Account created successfully");
+}
+
+/* DROPDOWNS */
+async function loadDropdowns(){
+let u=await fetch(API+"/users").then(r=>r.json());
+let i=await fetch(API+"/items").then(r=>r.json());
+let s=await fetch(API+"/stations").then(r=>r.json());
+
+u.forEach(x=>{
+l_user.innerHTML+=`<option value="${x.user_id}">${x.name}</option>`;
+f_user.innerHTML+=`<option value="${x.user_id}">${x.name}</option>`;
+});
+
+i.forEach(x=>{
+l_item.innerHTML+=`<option value="${x.item_id}">${x.item_name}</option>`;
+f_item.innerHTML+=`<option value="${x.item_id}">${x.item_name}</option>`;
+});
+
+s.forEach(x=>{
+l_station.innerHTML+=`<option value="${x.station_id}">${x.station_name}</option>`;
+f_station.innerHTML+=`<option value="${x.station_id}">${x.station_name}</option>`;
+});
+}
+
+/* LOST */
+async function addLost(){
+await fetch(API+"/add-lost",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+user_id:l_user.value,
+item_id:l_item.value,
+station_id:l_station.value,
+location:l_loc.value
+})
+});
+alert("Lost item reported");
+}
+
+/* FOUND */
+async function addFound(){
+await fetch(API+"/add-found",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+user_id:f_user.value,
+item_id:f_item.value,
+station_id:f_station.value,
+location:f_loc.value
+})
+});
+alert("Found item reported");
+}
+
+/* LOAD LOST */
+async function loadLost(){
+let d=await fetch(API+"/lost-items").then(r=>r.json());
+lostList.innerHTML=d.map(x=>`
+<div class="item">${x.item_name} | ${x.user_name} | ${x.location}</div>
+`).join("");
+}
+
+/* LOAD FOUND */
+async function loadFound(){
+let d=await fetch(API+"/found-items").then(r=>r.json());
+foundList.innerHTML=d.map(x=>`
+<div class="item">
+<b>${x.item_name}</b><br>
+👤 ${x.user_name}<br>
+📞 ${x.phone}<br>
+📧 ${x.email}<br>
+📍 ${x.location}
+</div>
+`).join("");
+}
+
+/* MATCHES */
+async function loadMatches(){
+let d=await fetch(API+"/matches").then(r=>r.json());
+matchList.innerHTML=d.map(x=>`
+<div class="item">${x.item_name} - Score: ${x.match_score}</div>
+`).join("");
+}
+
+/* NOTIFICATIONS */
+async function loadNotif(){
+let d=await fetch(API+"/notifications/"+currentUser).then(r=>r.json());
+
+notifList.innerHTML=d.length?
+d.map(x=>`<div class="item">${x.title}<br>${x.message}</div>`).join("")
+:"<div class='item'>No notifications</div>";
+}
+
+/* NAV */
+function show(id){
+["lost","found","matches","notif"].forEach(x=>{
+document.getElementById(x).style.display="none";
+});
+document.getElementById(id).style.display="block";
+}
+
+</script>
+
+</body>
+</html>
